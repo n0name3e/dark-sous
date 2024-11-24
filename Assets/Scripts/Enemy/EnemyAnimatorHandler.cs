@@ -55,6 +55,12 @@ public class EnemyAnimatorHandler : MonoBehaviour
     {
         ai.HorizontalSwingFollowUp();
     }
+    public void ThrowDagger()
+    {
+        GameObject thrownDagger = Instantiate(Resources.Load("throwingDagger") as GameObject, holyDagger.transform.position, Quaternion.identity);
+        thrownDagger.GetComponent<Rigidbody>().velocity = transform.right * -15f;
+        Destroy(thrownDagger, 3f);
+    }
     public void EnableDagger()
     {
         holyDagger.SetActive(true);

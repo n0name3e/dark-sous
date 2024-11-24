@@ -60,6 +60,8 @@ public class BossAI : MonoBehaviour
         angle = CalculateAngle();
         if (distance >= 2f)
         {
+            DaggerThrow();
+
             if (lastAttack != "RunningDoubleSlash" && passiveTimer <= 0f && agression >= 25 && distance <= 4f)
             {
                 RunningDoubleSlash();
@@ -71,8 +73,6 @@ public class BossAI : MonoBehaviour
 
             return;
         }
-        HorizontalSwing();
-        isMoving = false;
         return;
         if (agression >= 100)
         {
@@ -115,6 +115,7 @@ public class BossAI : MonoBehaviour
     }
     public void StartRetreating()
     {
+        movement.acceleratingSpeed = 3f;
         isAccelerating = true;
         acceleratingTarget = (transform.right * 100); // for some reasons it's actually backwards
     }
@@ -141,7 +142,7 @@ public class BossAI : MonoBehaviour
     #region Attacks
     private void Uppercut()
     {
-        agression += 20;
+        agression += 15;
         rotationSpeedMultiplier = 0.1f;
         weapon.damage = 40;
         weapon.impactType = OnHitImpactType.SlightStagger;
@@ -160,7 +161,7 @@ public class BossAI : MonoBehaviour
     }
     private void DelayedHorizontalSwing()
     {
-        agression += 35;
+        agression += 25;
         rotationSpeedMultiplier = 0.1f;
         weapon.damage = 70;
         weapon.impactType = OnHitImpactType.KnockDown;
@@ -203,6 +204,22 @@ public class BossAI : MonoBehaviour
         daggerWeapon.damage = 20;
         daggerWeapon.impactType = OnHitImpactType.SlightStagger;
         animatorHandler.PlayAnimation("DoubleDaggerSlash", true);
+    }
+    private void RetreatingDaggerSlash()
+    {
+        agression = 0;
+        rotationSpeedMultiplier = 0.1f;
+        dagger.SetActive(true);
+        daggerWeapon.damage = 30;
+        daggerWeapon.impactType = OnHitImpactType.SlightStagger;
+        animatorHandler.PlayAnimation("RetreatingDaggerSlash", true);
+    }
+    private void DaggerThrow()
+    {
+        agression += 0;
+        rotationSpeedMultiplier = 0.1f;
+        dagger.SetActive(true);
+        animatorHandler.PlayAnimation("DaggerThrow", true);
     }
     #endregion
 }

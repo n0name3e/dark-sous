@@ -64,7 +64,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\AnimatorHandler.cs" />
     <Compile Include="Assets\Scripts\CameraHandler.cs" />
     <Compile Include="Assets\Scripts\Enemy\BossAI.cs" />
     <Compile Include="Assets\Scripts\Enemy\BossHealthBar.cs" />
@@ -72,26 +71,27 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyMovement.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyStats.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyWeapon.cs" />
-    <Compile Include="Assets\Scripts\HealthBar.cs" />
-    <Compile Include="Assets\Scripts\InputHandler.cs" />
     <Compile Include="Assets\Scripts\Items\Consumable.cs" />
     <Compile Include="Assets\Scripts\Items\Item.cs" />
     <Compile Include="Assets\Scripts\Items\JagermaisterItem.cs" />
+    <Compile Include="Assets\Scripts\Player\AnimatorHandler.cs" />
+    <Compile Include="Assets\Scripts\Player\InputHandler.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerActionPlanner.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerAttack.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerControls.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerInventory.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerItemManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerStats.cs" />
-    <Compile Include="Assets\Scripts\PlayerInventory.cs" />
-    <Compile Include="Assets\Scripts\PlayerWeapon.cs" />
-    <Compile Include="Assets\Scripts\QuickSlotsUI.cs" />
+    <Compile Include="Assets\Scripts\Player\Weapon\PlayerWeapon.cs" />
+    <Compile Include="Assets\Scripts\Player\Weapon\WeaponHolderSlot.cs" />
+    <Compile Include="Assets\Scripts\Player\Weapon\WeaponItem.cs" />
+    <Compile Include="Assets\Scripts\Player\Weapon\WeaponSlotManager.cs" />
     <Compile Include="Assets\Scripts\ResetAnimatorBool.cs" />
-    <Compile Include="Assets\Scripts\StaminaBar.cs" />
-    <Compile Include="Assets\Scripts\WeaponHolderSlot.cs" />
-    <Compile Include="Assets\Scripts\WeaponItem.cs" />
-    <Compile Include="Assets\Scripts\WeaponSlotManager.cs" />
+    <Compile Include="Assets\Scripts\UI\HealthBar.cs" />
+    <Compile Include="Assets\Scripts\UI\QuickSlotsUI.cs" />
+    <Compile Include="Assets\Scripts\UI\StaminaBar.cs" />
     <Compile Include="Assets\SetPosition.cs" />
     <Reference Include="UnityEngine">
       <HintPath>H:/Unity/Hub/Editor/2019.4.19f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
