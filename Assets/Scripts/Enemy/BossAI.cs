@@ -58,40 +58,54 @@ public class BossAI : MonoBehaviour
 
         distance = Vector3.Distance(transform.position, player.position);
         angle = CalculateAngle();
+        if (distance >= 3f)
+        {
+            if (lastAttack != "DaggerThrow" && Random.value <= 0.2f * Time.deltaTime)
+            {
+                DaggerThrow();
+                return;
+            }
+        }
+        if (distance > 2f && distance <= 3.5f && Random.value <= 0.2f * Time.deltaTime)
+        {
+            FlyingPlunge();
+            return;
+        }
         if (distance >= 2f)
         {
-            DaggerThrow();
-
-            if (lastAttack != "RunningDoubleSlash" && passiveTimer <= 0f && agression >= 25 && distance <= 4f)
+            if (lastAttack != "RunningDoubleSlash" && passiveTimer <= 0f && agression >= 25 && distance <= 4f 
+                && Random.value <= 0.4f * Time.deltaTime)
             {
                 RunningDoubleSlash();
+                return;
             }
             movement.MoveTowardsTarget(player);
             animatorHandler.UpdateMovementAnimation();
             rotationSpeedMultiplier = 1f;
             isMoving = true;
-
             return;
         }
-        return;
         if (agression >= 100)
         {
-            Retreat();
+            if (Random.Range(0, 100) <= 75)
+                Retreat();
+            else
+                RetreatingDaggerSlash();
+            
             return;
         }
         //DoubleDaggerSlash();
-        if (lastAttack != "Uppercut" && (angle <= 10 && angle >= -25) && Random.Range(0, 100) <= 25 + 50 * System.Convert.ToInt32(isMoving))
+        float r = Random.Range(0, 100);
+        if (lastAttack != "Uppercut" && (angle <= 10 && angle >= -25) && r <= 25 + 50 * System.Convert.ToInt32(isMoving))
         {
             Uppercut();
-            isMoving = false;
-            return;
+            //isMoving = false;
         }
-        if (lastAttack != "DoubleDaggerSlash" && distance < 1.2f && Random.Range(0, 100) <= 25)
+        else if (lastAttack != "DoubleDaggerSlash" && distance < 1.2f && r >= 25)
         {
             DoubleDaggerSlash();
-            return;
         }
-        if (lastAttack != "DelayedHorizontalSwing" && Random.Range(0, 100) <= 25)
+        else if (lastAttack != "DelayedHorizontalSwing" && r >= 50)
         {
             DelayedHorizontalSwing();
         }
@@ -134,9 +148,14 @@ public class BossAI : MonoBehaviour
     }
     public void CheckDaggerAttack()
     {
-        if (distance <= 2f && Random.Range(0, 100) <= 50)
+        if (distance <= 2f && Random.Range(0, 100) <= 40)
         {
             DoubleDaggerSlash();
+            return;
+        }
+        if (distance <= 2.5f && Random.Range(0, 100) <= 25)
+        {
+            RetreatingDaggerSlash();
         }
     }
     #region Attacks
@@ -151,7 +170,7 @@ public class BossAI : MonoBehaviour
     }
     public void UppercutFollowUp()
     {
-        if (distance >= 3f || Random.Range(0, 100) <= 75)
+        if (distance >= 3f || Random.Range(0, 100) <= 50)
             return;
         agression += 10;
         rotationSpeedMultiplier = 0.1f;
@@ -161,7 +180,7 @@ public class BossAI : MonoBehaviour
     }
     private void DelayedHorizontalSwing()
     {
-        agression += 25;
+        agression += 15;
         rotationSpeedMultiplier = 0.1f;
         weapon.damage = 70;
         weapon.impactType = OnHitImpactType.KnockDown;
@@ -170,7 +189,7 @@ public class BossAI : MonoBehaviour
     }
     private void HorizontalSwing()
     {
-        agression += 15;
+        agression += 10;
         rotationSpeedMultiplier = 0.3f;
         weapon.damage = 60;
         weapon.impactType = OnHitImpactType.KnockDown;
@@ -179,16 +198,16 @@ public class BossAI : MonoBehaviour
     }
     public void HorizontalSwingFollowUp()
     {
-        agression += 10;
+        if (distance >= 3.5f || Random.Range(0, 100) <= 35)
+            return;
+        agression += 5;
         rotationSpeedMultiplier = 0.4f;
         weapon.damage = 60;
         animatorHandler.PlayAnimation("HorizontalSwingFollowUp", true);
-        if (distance >= 3.5f || Random.Range(0, 100) <= 75)
-            return;
     }
     private void RunningDoubleSlash()
     {
-        agression += 40;
+        agression += 30;
         rotationSpeedMultiplier = 1f;
         weapon.damage = 50;
         weapon.impactType = OnHitImpactType.SlightStagger;
@@ -198,12 +217,13 @@ public class BossAI : MonoBehaviour
 
     private void DoubleDaggerSlash()
     {
-        agression += 15;
+        agression += 10;
         rotationSpeedMultiplier = 0.1f;
         dagger.SetActive(true);
         daggerWeapon.damage = 20;
         daggerWeapon.impactType = OnHitImpactType.SlightStagger;
         animatorHandler.PlayAnimation("DoubleDaggerSlash", true);
+        lastAttack = "DoubleDaggerSlash";
     }
     private void RetreatingDaggerSlash()
     {
@@ -213,6 +233,7 @@ public class BossAI : MonoBehaviour
         daggerWeapon.damage = 30;
         daggerWeapon.impactType = OnHitImpactType.SlightStagger;
         animatorHandler.PlayAnimation("RetreatingDaggerSlash", true);
+        lastAttack = "RetreatingDaggerSlash";
     }
     private void DaggerThrow()
     {
@@ -220,6 +241,16 @@ public class BossAI : MonoBehaviour
         rotationSpeedMultiplier = 0.1f;
         dagger.SetActive(true);
         animatorHandler.PlayAnimation("DaggerThrow", true);
+        lastAttack = "DaggerThrow";
+    }
+    private void FlyingPlunge()
+    {
+        agression += 10;
+        rotationSpeedMultiplier = 0f;
+        weapon.damage = 70;
+        weapon.impactType = OnHitImpactType.KnockDown;
+        animatorHandler.PlayAnimation("FlyingPlunge", true);
+        lastAttack = "FlyingPlunge";
     }
     #endregion
 }

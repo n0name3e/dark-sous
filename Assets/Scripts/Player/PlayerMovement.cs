@@ -23,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     public float airTimer;
 
     [Header("Movement Stats")]
+    [SerializeField] private AnimationCurve rollSpeedCurve;
     [SerializeField] private float movementSpeed = 2f;
     [SerializeField] private float sprintSpeed = 4f;
     [SerializeField] private float rotationSpeed = 10f;
@@ -30,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float fallingSpeed = 30f;
     [SerializeField] private float rollStaminaCost = 20f;
 
-
+    private float rollTimer = 0f;
     // movement
     private Vector3 normalVector;
     private Vector3 targetPosition;
@@ -97,25 +98,24 @@ public class PlayerMovement : MonoBehaviour
         if (playerManager.isRolling == false)
             return;
 
-        /*rollDirection = cameraObject.forward * inputHandler.vertical;
-        rollDirection += cameraObject.right * inputHandler.horizontal;
-        rollDirection.Normalize();
-        rollDirection.y = 0;*/
         rollDirection = transform.forward;
-        rollDirection *= rollSpeed;
+        print(rollSpeedCurve.Evaluate(rollTimer));
+        rollDirection *= rollSpeedCurve.Evaluate(rollTimer) * 3;
+        //rollDirection *= rollSpeed;
 
         Quaternion rollRotation = Quaternion.LookRotation(rollDirection);
         transform.rotation = rollRotation;
 
         Vector3 projectedVelocity = Vector3.ProjectOnPlane(rollDirection, normalVector);
         rigidbody.velocity = projectedVelocity;
+
+        rollTimer += Time.deltaTime;
     }
 
     public void HandleRolling(float delta)
     {
         if (playerManager.isInteracting && (playerManager.isInteracting && !canRoll))
             return;
-        
         if (inputHandler.rollFlag && playerStats.currentStamina > 0)
         {
             rollDirection = cameraObject.forward * inputHandler.vertical;
@@ -131,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
             animatorHandler.PlayTargetAnimation("Roll", true, true);
             playerStats.DealStaminaDamage(rollStaminaCost);
             canRoll = false;
+            rollTimer = 0f;
         }
     }
 
