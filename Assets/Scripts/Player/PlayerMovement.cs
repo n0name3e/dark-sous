@@ -99,8 +99,7 @@ public class PlayerMovement : MonoBehaviour
             return;
 
         rollDirection = transform.forward;
-        print(rollSpeedCurve.Evaluate(rollTimer));
-        rollDirection *= rollSpeedCurve.Evaluate(rollTimer) * 3;
+        rollDirection *= rollSpeedCurve.Evaluate(rollTimer) * rollSpeed;
         //rollDirection *= rollSpeed;
 
         Quaternion rollRotation = Quaternion.LookRotation(rollDirection);

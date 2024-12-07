@@ -34,6 +34,12 @@ public class PlayerInventory : MonoBehaviour
         consumable = consumables[currentConsumableIndex];
         weaponSlotManager.LoadWeaponInSlot(leftWeapon, Hand.Left);
         weaponSlotManager.LoadWeaponInSlot(rightWeapon, Hand.Right);
+
+        for (int i = 0; i < consumables.Length; i++)
+        {
+            consumable.quantity = consumable.maxCount;
+        }
+
         quickSlotsUI.UpdateConsumableQuickSlot(consumable);
     }
     public void ChangeRightHandWeapon()

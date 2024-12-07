@@ -8,13 +8,15 @@ public class JagermaisterItem : Consumable
     public override void UseItem(AnimatorHandler playerAnimatorHandler, WeaponSlotManager weaponSlotManager, 
         PlayerItemManager playerItemManager, PlayerManager playerManager)
     {
-        MonoBehaviour.print("ksk");
+        if (playerManager.isInteracting)
+            return;
         base.UseItem(playerAnimatorHandler, weaponSlotManager, playerItemManager, playerManager);
         playerItemManager.healAmount = recoveryAmount;
         if (model != null)
         {
             GameObject bottle = Instantiate(model, weaponSlotManager.rightWeaponSlot.gameObject.transform);
-            weaponSlotManager.rightWeaponSlot.UnloadWeapon();
+            //weaponSlotManager.rightWeaponSlot.UnloadWeapon();
         }
+        quantity--;
     }
 }

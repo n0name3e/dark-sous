@@ -10,6 +10,8 @@ public class EnemyAnimatorHandler : MonoBehaviour
     [SerializeField] private Collider damageCollider;
     [SerializeField] private GameObject holyDagger;
     [SerializeField] private Collider daggerCollider;
+    [SerializeField] private GameObject holyHammer;
+    [SerializeField] private Collider hammerCollider;
 
     private void Awake()
     {
@@ -55,6 +57,10 @@ public class EnemyAnimatorHandler : MonoBehaviour
     {
         ai.HorizontalSwingFollowUp();
     }
+    public void DaggerThrowFollowUp()
+    {
+        ai.DaggerThrowFollowUp();
+    }
     public void ThrowDagger()
     {
         GameObject thrownDagger = Instantiate(Resources.Load("throwingDagger") as GameObject, holyDagger.transform.position, Quaternion.identity);
@@ -68,6 +74,10 @@ public class EnemyAnimatorHandler : MonoBehaviour
     public void DisableDagger()
     {
         holyDagger.SetActive(false);
+    }
+    public void DisableHammer()
+    {
+        holyHammer.SetActive(false);
     }
     public void EnableDamageCollider()
     {
@@ -84,5 +94,13 @@ public class EnemyAnimatorHandler : MonoBehaviour
     public void DisableHolyDaggerCollider()
     {
         daggerCollider.enabled = false;
+    }
+    public void EnableHolyHammerCollider()
+    {
+        hammerCollider.enabled = true;
+    }
+    public void DisableHolyHammerCollider()
+    {
+        hammerCollider.enabled = false;
     }
 }

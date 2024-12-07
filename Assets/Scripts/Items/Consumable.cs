@@ -18,7 +18,6 @@ public class Consumable : Item
         if (quantity >= 1)
         {
             playerAnimatorHandler.PlayTargetAnimation(consumeAnimation, true, false, true);
-            //quantity -= 1;
         }
     }
 }

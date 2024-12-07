@@ -23,6 +23,7 @@ public class EnemyMovement : MonoBehaviour
     public void AccelerateTowardsTarget(Vector3 target)
     {
         Vector3 movingDirection = (target - transform.position).normalized;
+        movingDirection.y = 0;
         rb.velocity = movingDirection * (acceleratingSpeed);
     }
     public void RotateTowardsTarget(Transform target, float rotationSpeed)

@@ -6,16 +6,21 @@ public class BossAI : MonoBehaviour
 {
     private EnemyMovement movement;
     private EnemyAnimatorHandler animatorHandler;
-    private EnemyWeapon weapon;
+    private EnemyStats stats;
 
+    [SerializeField] private GameObject mainWeaponObject;
+    private EnemyWeapon weapon;
     [SerializeField] private GameObject dagger;
     private EnemyWeapon daggerWeapon;
+    [SerializeField] private GameObject hammer;
+    private EnemyWeapon hammerWeapon;
 
     private Transform player;
     private Vector3 acceleratingTarget;
 
     private string lastAttack = string.Empty;
 
+    private bool isPhaseTwo = false;
     private float distance;
     private float angle;
     /// <summary>
@@ -28,18 +33,22 @@ public class BossAI : MonoBehaviour
     private bool isMoving;
     private bool isInteracting;
     private bool isAccelerating = false;
+    private bool isRetreating = false;
 
     private void Awake()
     {
         movement = GetComponent<EnemyMovement>();
         animatorHandler = GetComponentInChildren<EnemyAnimatorHandler>();
-        weapon = GetComponentInChildren<EnemyWeapon>();
+        weapon = mainWeaponObject.GetComponent<EnemyWeapon>();
+        stats = GetComponent<EnemyStats>();
         daggerWeapon = dagger.GetComponent<EnemyWeapon>();
+        hammerWeapon = hammer.GetComponent<EnemyWeapon>();
     }
     // Start is called before the first frame update
     void Start()
     {
         player = FindObjectOfType<PlayerMovement>().transform;
+        isPhaseTwo = false;
     }
 
     // Update is called once per frame
@@ -51,6 +60,11 @@ public class BossAI : MonoBehaviour
         movement.RotateTowardsTarget(player, rotationSpeedMultiplier);
         if (isAccelerating)
         {
+            AccelerateTowardsPlayer(movement.acceleratingSpeed);
+            movement.AccelerateTowardsTarget(acceleratingTarget);
+        }
+        if (isRetreating)
+        {
             movement.AccelerateTowardsTarget(acceleratingTarget);
         }
         if (isInteracting)
@@ -58,6 +72,12 @@ public class BossAI : MonoBehaviour
 
         distance = Vector3.Distance(transform.position, player.position);
         angle = CalculateAngle();
+        if (((float) stats.currentHealth / (float) stats.maxHealth) <= 0.5f && !isPhaseTwo)
+        {
+            isPhaseTwo = true;
+            PhaseTransition();
+            return;
+        }
         if (distance >= 3f)
         {
             if (lastAttack != "DaggerThrow" && Random.value <= 0.2f * Time.deltaTime)
@@ -66,6 +86,11 @@ public class BossAI : MonoBehaviour
                 return;
             }
         }
+        if (isPhaseTwo && lastAttack != "HammerLeap" && distance >= 3f && Random.value <= 0.2f * Time.deltaTime)
+        {
+            HammerLeap();
+            return;
+        }
         if (distance > 2f && distance <= 3.5f && Random.value <= 0.2f * Time.deltaTime)
         {
             FlyingPlunge();
@@ -73,33 +98,40 @@ public class BossAI : MonoBehaviour
         }
         if (distance >= 2f)
         {
-            if (lastAttack != "RunningDoubleSlash" && passiveTimer <= 0f && agression >= 25 && distance <= 4f 
+            if (lastAttack != "RunningDoubleSlash" && passiveTimer <= 0f && agression >= 25 && distance <= 4f
                 && Random.value <= 0.4f * Time.deltaTime)
             {
                 RunningDoubleSlash();
                 return;
             }
-            movement.MoveTowardsTarget(player);
-            animatorHandler.UpdateMovementAnimation();
-            rotationSpeedMultiplier = 1f;
-            isMoving = true;
+            Move();
             return;
         }
-        if (agression >= 100)
+        isMoving = false;
+        if (agression >= 60)
         {
             if (Random.Range(0, 100) <= 75)
                 Retreat();
             else
-                RetreatingDaggerSlash();
-            
+                RetreatingDaggerSlash();          
             return;
         }
-        //DoubleDaggerSlash();
         float r = Random.Range(0, 100);
+        if (isPhaseTwo && r <= 20f && lastAttack != "HammerSwing")
+        {
+            HammerSwing();
+            return;
+        }
+        if (isPhaseTwo && r <= 10f && lastAttack != "FourComboSlashes")
+        {
+            FourComboSlashes();
+            return;
+        }
+        r = Random.Range(0, 100);
+        //DoubleDaggerSlash();
         if (lastAttack != "Uppercut" && (angle <= 10 && angle >= -25) && r <= 25 + 50 * System.Convert.ToInt32(isMoving))
         {
             Uppercut();
-            //isMoving = false;
         }
         else if (lastAttack != "DoubleDaggerSlash" && distance < 1.2f && r >= 25)
         {
@@ -113,9 +145,16 @@ public class BossAI : MonoBehaviour
         {
             HorizontalSwing();
         }
-
-        isMoving = false;
     }
+
+    private void Move()
+    {
+        movement.MoveTowardsTarget(player);
+        animatorHandler.UpdateMovementAnimation();
+        rotationSpeedMultiplier = 1f;
+        isMoving = true;
+    }
+
     private float CalculateAngle()
     {
         Vector3 direction = (player.transform.position - transform.position).normalized;
@@ -243,6 +282,25 @@ public class BossAI : MonoBehaviour
         animatorHandler.PlayAnimation("DaggerThrow", true);
         lastAttack = "DaggerThrow";
     }
+    public void DaggerThrowFollowUp()
+    {
+        float r = Random.Range(0, 100);
+        if (distance >= 2.5f && distance <= 5f)
+        {
+            if (isPhaseTwo && r <= 40)
+            {
+                HammerLeap();
+            }
+            else if (r >= 40 && r <= 70)
+            {
+                FlyingPlunge();
+            }
+        }
+        else if (distance <= 2.5f && r <= 20)
+        {
+            HorizontalSwing();
+        }
+    }
     private void FlyingPlunge()
     {
         agression += 10;
@@ -251,6 +309,49 @@ public class BossAI : MonoBehaviour
         weapon.impactType = OnHitImpactType.KnockDown;
         animatorHandler.PlayAnimation("FlyingPlunge", true);
         lastAttack = "FlyingPlunge";
+    }
+    private void PhaseTransition()
+    {
+        hammer.SetActive(true);
+        agression = 0;
+        rotationSpeedMultiplier = 1f;
+        hammerWeapon.damage = 100;
+        hammerWeapon.impactType = OnHitImpactType.KnockDown;
+        animatorHandler.PlayAnimation("PhaseTransition", true);
+    }
+    private void HammerSwing()
+    {
+        hammer.SetActive(true);
+        agression += 15;
+        rotationSpeedMultiplier = 0.4f;
+        weapon.damage = 10;
+        weapon.impactType = OnHitImpactType.SlightStagger;
+        hammerWeapon.damage = 80;
+        hammerWeapon.impactType = OnHitImpactType.KnockDown;
+        animatorHandler.PlayAnimation("HammerSwing", true);
+        lastAttack = "HammerSwing";
+    }
+    private void HammerLeap()
+    {
+        hammer.SetActive(true);
+        agression += 25;
+        rotationSpeedMultiplier = 0.8f;
+        hammerWeapon.damage = 120;
+        hammerWeapon.impactType = OnHitImpactType.KnockDown;
+        animatorHandler.PlayAnimation("HammerLeap", true);
+        lastAttack = "HammerLeap";
+    }
+    private void FourComboSlashes()
+    {
+        dagger.SetActive(true);
+        agression += 40;
+        rotationSpeedMultiplier = 0.6f;
+        daggerWeapon.damage = 60;
+        daggerWeapon.impactType = OnHitImpactType.SlightStagger;
+        weapon.damage = 80;
+        weapon.impactType = OnHitImpactType.SlightStagger;
+        animatorHandler.PlayAnimation("FourComboSlashes", true);
+        lastAttack = "FourComboSlashes";
     }
     #endregion
 }

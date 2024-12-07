@@ -5,6 +5,7 @@ public class QuickSlotsUI : MonoBehaviour
 {
     public Image rightWeaponIcon;
     public Image consumableIcon;
+    public Text consumableAmount;
     
     public void UpdateWeaponQuickSlots(Hand hand, WeaponItem weaponItem)
     {
@@ -37,5 +38,6 @@ public class QuickSlotsUI : MonoBehaviour
         {
             consumableIcon.enabled = false;
         }
+        consumableAmount.text = consumable.quantity.ToString();
     }
 }

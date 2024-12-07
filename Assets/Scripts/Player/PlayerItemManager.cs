@@ -10,6 +10,8 @@ public class PlayerItemManager : MonoBehaviour
     private WeaponSlotManager weaponSlotManager;
     private PlayerManager playerManager;
 
+    public QuickSlotsUI quickSlotsUI;
+
     public int healAmount;
 
     private void Awake()
@@ -19,11 +21,14 @@ public class PlayerItemManager : MonoBehaviour
         animatorHandler = GetComponentInChildren<AnimatorHandler>();
         weaponSlotManager = GetComponent<WeaponSlotManager>();
         playerManager = GetComponent<PlayerManager>();
+        quickSlotsUI = FindObjectOfType<QuickSlotsUI>();
     }
 
     public void UseCurrentConsumable()
     {
-        GetCurrentConsumable().UseItem(animatorHandler, weaponSlotManager, this, playerManager);
+        Consumable currentConsumable = GetCurrentConsumable();
+        currentConsumable.UseItem(animatorHandler, weaponSlotManager, this, playerManager);
+        quickSlotsUI.UpdateConsumableQuickSlot(currentConsumable);
     }
 
     private Consumable GetCurrentConsumable()
