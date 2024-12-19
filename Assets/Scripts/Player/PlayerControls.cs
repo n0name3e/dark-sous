@@ -131,6 +131,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Interract"",
+                    ""type"": ""Button"",
+                    ""id"": ""878fae90-d9e6-4ce8-a697-fcf017d4730b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -164,6 +172,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Useitem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""65b37c7f-64f6-45bc-bb79-931fd72b1067"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interract"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -227,6 +246,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_PlayerActions_Roll = m_PlayerActions.FindAction("Roll", throwIfNotFound: true);
         m_PlayerActions_LightAttack = m_PlayerActions.FindAction("LightAttack", throwIfNotFound: true);
         m_PlayerActions_Useitem = m_PlayerActions.FindAction("Useitem", throwIfNotFound: true);
+        m_PlayerActions_Interract = m_PlayerActions.FindAction("Interract", throwIfNotFound: true);
         // PlayerItems
         m_PlayerItems = asset.FindActionMap("PlayerItems", throwIfNotFound: true);
         m_PlayerItems_Right = m_PlayerItems.FindAction("Right", throwIfNotFound: true);
@@ -324,6 +344,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_PlayerActions_Roll;
     private readonly InputAction m_PlayerActions_LightAttack;
     private readonly InputAction m_PlayerActions_Useitem;
+    private readonly InputAction m_PlayerActions_Interract;
     public struct PlayerActionsActions
     {
         private @PlayerControls m_Wrapper;
@@ -331,6 +352,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Roll => m_Wrapper.m_PlayerActions_Roll;
         public InputAction @LightAttack => m_Wrapper.m_PlayerActions_LightAttack;
         public InputAction @Useitem => m_Wrapper.m_PlayerActions_Useitem;
+        public InputAction @Interract => m_Wrapper.m_PlayerActions_Interract;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -349,6 +371,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Useitem.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnUseitem;
                 @Useitem.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnUseitem;
                 @Useitem.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnUseitem;
+                @Interract.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInterract;
+                @Interract.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInterract;
+                @Interract.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnInterract;
             }
             m_Wrapper.m_PlayerActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -362,6 +387,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Useitem.started += instance.OnUseitem;
                 @Useitem.performed += instance.OnUseitem;
                 @Useitem.canceled += instance.OnUseitem;
+                @Interract.started += instance.OnInterract;
+                @Interract.performed += instance.OnInterract;
+                @Interract.canceled += instance.OnInterract;
             }
         }
     }
@@ -417,6 +445,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnRoll(InputAction.CallbackContext context);
         void OnLightAttack(InputAction.CallbackContext context);
         void OnUseitem(InputAction.CallbackContext context);
+        void OnInterract(InputAction.CallbackContext context);
     }
     public interface IPlayerItemsActions
     {

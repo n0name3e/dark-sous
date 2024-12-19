@@ -3,10 +3,20 @@ using UnityEngine.UI;
 
 public class QuickSlotsUI : MonoBehaviour
 {
+    public static QuickSlotsUI instance;
+
     public Image rightWeaponIcon;
     public Image consumableIcon;
     public Text consumableAmount;
-    
+
+    private void Awake()
+    {
+        if (instance != null)
+            Destroy(gameObject);
+        else
+            instance = this;
+    }
+
     public void UpdateWeaponQuickSlots(Hand hand, WeaponItem weaponItem)
     {
         if (hand == Hand.Right)

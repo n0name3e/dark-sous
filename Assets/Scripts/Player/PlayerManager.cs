@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     private CameraHandler cameraHandler;
     private PlayerMovement playerMovement;
 
+
     public bool isInteracting;
 
     [Header("Flags")]
@@ -18,6 +19,7 @@ public class PlayerManager : MonoBehaviour
     public bool isInAir;
     public bool isGrounded;
     public bool isImmune;
+
 
 
     void Start()

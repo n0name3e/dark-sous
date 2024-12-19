@@ -12,6 +12,8 @@ public class PlayerStats : MonoBehaviour
     public float sprintingStaminaConsumption = 10f;
     public bool isImmune = false;
 
+    public Vector3 startingPosition;
+
     /// <summary>
     /// the shittest idea to make enemies' weapon deal damage after i-frames expiration
     /// </summary>
@@ -31,6 +33,11 @@ public class PlayerStats : MonoBehaviour
         playerManager = GetComponent<PlayerManager>();
     }
 
+    private void OnEnable()
+    {
+        startingPosition = transform.position;
+    }
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -40,6 +47,10 @@ public class PlayerStats : MonoBehaviour
     }
     private void Update()
     {
+        if (transform.position.y < -10 && currentHealth > 0)
+        {
+            Die();
+        }
         if (!playerManager.isInteracting)
         {
             if (playerManager.isSprinting)
@@ -55,6 +66,14 @@ public class PlayerStats : MonoBehaviour
     private void LateUpdate()
     {
         collidingWeapon = null;
+    }
+
+    public void Revive()
+    {
+        animatorHandler.Revive();
+        currentHealth = maxHealth;
+        currentStamina = maxStamina;
+        healthBar.SetHPBar(currentHealth);
     }
 
     /// <summary>
@@ -78,15 +97,25 @@ public class PlayerStats : MonoBehaviour
         healthBar.SetHPBar(currentHealth);
         if (currentHealth <= 0)
         {
-            currentHealth = 0;
-            animatorHandler.PlayTargetAnimation("Dead", true, false);
+            Die();
             return;
         }
+        if (impactType != OnHitImpactType.NoKnockback)
+            GetComponentInChildren<WeaponSlotManager>().DisableRightWeaponDamageCollider();
         if (impactType == OnHitImpactType.SlightStagger)
             animatorHandler.PlayTargetAnimation("Damage_01", true, false);
         if (impactType == OnHitImpactType.KnockDown)
             animatorHandler.PlayTargetAnimation("KnockDown", true, false);
     }
+
+    private void Die()
+    {
+        currentHealth = 0;
+        healthBar.SetHPBar(0);
+        animatorHandler.PlayTargetAnimation("Dead", true, false);
+        LevelUpdateManager.instance.UpdateLevel(2f);
+    }
+
     public void Heal(int heal)
     {
         currentHealth = Mathf.Min(currentHealth + heal, maxHealth);

@@ -25,10 +25,10 @@ public class PlayerInventory : MonoBehaviour
     private void Awake()
     {
         weaponSlotManager = GetComponentInChildren<WeaponSlotManager>();
-        quickSlotsUI = FindObjectOfType<QuickSlotsUI>();
     }
     private void Start()
     {
+        quickSlotsUI = QuickSlotsUI.instance;
         leftWeapon = weaponsInLeftSlot[currentLeftWeaponIndex];
         rightWeapon = weaponsInRightSlot[currentRightWeaponIndex];
         consumable = consumables[currentConsumableIndex];

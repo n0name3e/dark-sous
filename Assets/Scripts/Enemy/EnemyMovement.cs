@@ -32,4 +32,8 @@ public class EnemyMovement : MonoBehaviour
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(movingDirection.x, 0, movingDirection.z)) * Quaternion.Euler(0, 90, 0); ;
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeedMultiplier * rotationSpeed);
     }
+    public void Stop()
+    {
+        rb.velocity = Vector3.zero;
+    }
 }

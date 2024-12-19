@@ -11,10 +11,12 @@ public class InputHandler : MonoBehaviour
     public bool rollInput;
     public bool lightAttackInput;
     public bool itemInput;
+    public bool interractInput;
     public bool rightInput; // right arrow
 
     public bool rollFlag;
     public bool sprintFlag;
+    public bool fogFlag; // true when in fog wall collider
     public float rollInputTimer;
 
 
@@ -64,6 +66,7 @@ public class InputHandler : MonoBehaviour
         HandleAttackInput(delta);
         HandleQuickSlots();
         HandleItemUsage();
+        HandleInterraction();
     }
 
     private void MoveInput(float delta)
@@ -120,5 +123,9 @@ public class InputHandler : MonoBehaviour
         {
             playerInventory.ChangeRightHandWeapon();
         }
+    }
+    private void HandleInterraction()
+    {
+        interractInput = _inputActions.PlayerActions.Interract.phase == UnityEngine.InputSystem.InputActionPhase.Started;
     }
 }

@@ -9,7 +9,7 @@ public class BossHealthBar : MonoBehaviour
 
 
     public static BossHealthBar Instance;
-    public EnemyStats enemyStats;
+    public EnemyStats enemy;
 
     private float timer;
 

@@ -14071,7 +14071,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 1.3666667
+  - time: 1.4
     functionName: DisableDagger
     data: 
     objectReferenceParameter: {fileID: 0}

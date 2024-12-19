@@ -70,8 +70,7 @@ public class AnimatorHandler : MonoBehaviour
         }
 
         Anim.SetFloat("Vertical", v, 0.1f, Time.deltaTime);
-        Anim.SetFloat("Horizontal", h, 0.1f, Time.deltaTime);
-        
+        Anim.SetFloat("Horizontal", h, 0.1f, Time.deltaTime);        
     }
 
     public void GiveImmunity()
@@ -82,6 +81,14 @@ public class AnimatorHandler : MonoBehaviour
     {
         Anim.SetBool("isImmune", false);
         playerStats.CheckCollidingWeapon();
+    }
+
+    /// <summary>
+    /// Change animation to idle to undo dying
+    /// </summary>
+    public void Revive()
+    {
+        PlayTargetAnimation("Movement", false, false, false);
     }
     public void UseFlask()
     {

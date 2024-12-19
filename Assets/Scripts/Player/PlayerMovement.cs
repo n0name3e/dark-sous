@@ -99,7 +99,10 @@ public class PlayerMovement : MonoBehaviour
             return;
 
         rollDirection = transform.forward;
-        rollDirection *= rollSpeedCurve.Evaluate(rollTimer) * rollSpeed;
+        float speed = rollSpeed;
+        if (playerStats.currentStamina <= 0)
+            speed = rollSpeed / 2;
+        rollDirection *= rollSpeedCurve.Evaluate(rollTimer) * speed;
         //rollDirection *= rollSpeed;
 
         Quaternion rollRotation = Quaternion.LookRotation(rollDirection);
@@ -115,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (playerManager.isInteracting && (playerManager.isInteracting && !canRoll))
             return;
-        if (inputHandler.rollFlag && playerStats.currentStamina > 0)
+        if (inputHandler.rollFlag && (playerStats.currentStamina > 0 || (playerStats.currentStamina <= 0 && playerManager.isInteracting)))
         {
             rollDirection = cameraObject.forward * inputHandler.vertical;
             rollDirection += cameraObject.right * inputHandler.horizontal;
